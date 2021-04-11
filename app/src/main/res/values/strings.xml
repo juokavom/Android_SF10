@@ -6,5 +6,8 @@
     <string name="sign_up">SIGN UP</string>
     <string name="sign_in">SIGN IN</string>
 
+    <string name="generic_profile_pic">https://firebasestorage.googleapis.com/v0/b/straightfrom10.appspot.com/o/profiles%2Fgeneric.png?alt=media&token=4c980577-26ee-49a7-857a-d83dfc092a3b</string>
+    <string name="sign_up_description_text">Enter your credentials to register with us</string>
+
 
 </resources>

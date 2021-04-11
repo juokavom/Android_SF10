@@ -18,16 +18,15 @@ import com.firebase.ui.auth.IdpResponse
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.FacebookAuthProvider
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.*
 import com.sf10.android.R
 import com.sf10.android.databinding.ActivityIntroBinding
+import com.sf10.android.firebase.FirestoreClass
+import com.sf10.android.models.User
 import java.util.*
 
 
-class IntroActivity : AppCompatActivity() {
+class IntroActivity : BaseActivity() {
     private lateinit var binding: ActivityIntroBinding
     private lateinit var callbackManager: CallbackManager
 
@@ -75,18 +74,25 @@ class IntroActivity : AppCompatActivity() {
 //        binding.btnSignInIntro.setOnClickListener{
 //            startActivity(Intent(this, SignInActivity::class.java))
 //        }
-//
-//        binding.btnSignUpIntro.setOnClickListener{
-//            startActivity(Intent(this, SignUpActivity::class.java))
-//        }
+
+        binding.btnSignUpIntro.setOnClickListener{
+            startActivity(Intent(this, SignUpActivity::class.java))
+        }
     }
 
     private fun signInWithCredential(credential: AuthCredential) {
         FirebaseAuth.getInstance().signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+                    val firebaseUser: FirebaseUser = task.result!!.user!!
+                    val user = User(firebaseUser.uid, firebaseUser.displayName!!,
+                        firebaseUser.email!!, firebaseUser.photoUrl!!.toString())
+                    FirestoreClass().registerUser(this@IntroActivity, user)
                     startActivity(Intent(this@IntroActivity, MainActivity::class.java))
                     finish()
+                } else {
+                    Toast.makeText(this@IntroActivity, "Authentication failed. ${task.exception}",
+                    Toast.LENGTH_LONG).show()
                 }
             }
     }
@@ -99,11 +105,8 @@ class IntroActivity : AppCompatActivity() {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val account = task.getResult(ApiException::class.java)!!
-                Log.d("TAG", "firebaseAuthWithGoogle:" + account.id)
                 signInWithCredential(GoogleAuthProvider.getCredential(account.idToken!!, null))
-            } catch (e: ApiException) {
-                Log.w("TAG", "Google sign in failed", e)
-            }
+            } catch (e: ApiException) {}
         } else {
             //Facebook
             callbackManager.onActivityResult(requestCode, resultCode, data)

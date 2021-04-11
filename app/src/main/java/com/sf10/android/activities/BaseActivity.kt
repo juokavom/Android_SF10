@@ -70,4 +70,13 @@ open class BaseActivity : AppCompatActivity() {
         snackBarView.setBackgroundColor(ContextCompat.getColor(this, R.color.snackbar_error_color))
     }
 
+    fun userRegisteredSuccess() {
+        Toast.makeText(
+            this, "You have successfully registered!",
+            Toast.LENGTH_SHORT
+        ).show()
+        hideProgressDialog()
+        finish()
+    }
+
 }
