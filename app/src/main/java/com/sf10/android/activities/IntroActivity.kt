@@ -74,10 +74,10 @@ class IntroActivity : BaseActivity() {
 //        binding.btnSignInIntro.setOnClickListener{
 //            startActivity(Intent(this, SignInActivity::class.java))
 //        }
-
-        binding.btnSignUpIntro.setOnClickListener{
-            startActivity(Intent(this, SignUpActivity::class.java))
-        }
+//
+//        binding.btnSignUpIntro.setOnClickListener{
+//            startActivity(Intent(this, SignUpActivity::class.java))
+//        }
     }
 
     private fun signInWithCredential(credential: AuthCredential) {

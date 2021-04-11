@@ -14,13 +14,25 @@ class FirestoreClass {
 
 
     fun registerUser(activity: BaseActivity, userInfo: User) {
-        mFireStore.collection(Constants.USERS)
-            .document(getCurrentUserId()).set(userInfo, SetOptions.merge())
-            .addOnSuccessListener {
-                activity.userRegisteredSuccess()
-            }.addOnFailureListener { e ->
-                Log.e(activity.javaClass.simpleName, "Error writing document", e)
+        mFireStore.collection(Constants.USERS).document(getCurrentUserId()).get()
+            .addOnSuccessListener { document ->
+                if (document.data != null) {
+                    Log.i("Firestore", "Document exists. Data: ${document.data}")
+                } else {
+                    Log.i("Firestore", "No such document, creating entity in DB")
+                    mFireStore.collection(Constants.USERS)
+                        .document(getCurrentUserId()).set(userInfo, SetOptions.merge())
+                        .addOnSuccessListener {
+                            activity.userRegisteredSuccess()
+                        }.addOnFailureListener { e ->
+                            Log.e(activity.javaClass.simpleName, "Error writing document", e)
+                        }
+                }
             }
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "Fetching from Firestore failed")
+            }
+
     }
 
 //    fun loadUserData(activity: BaseActivity) {

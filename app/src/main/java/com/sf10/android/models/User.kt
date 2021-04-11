@@ -3,12 +3,13 @@ package com.sf10.android.models
 import android.os.Parcel
 import android.os.Parcelable
 
-data class User (
+data class User(
     val id: String = "",
     val username: String = "",
     val email: String = "",
     val image: String = ""
-): Parcelable {
+
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readString()!!,
