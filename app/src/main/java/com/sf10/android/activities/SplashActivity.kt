@@ -26,6 +26,8 @@ class SplashActivity : AppCompatActivity() {
         val typeFace: Typeface = Typeface.createFromAsset(assets, "carbon bl.ttf")
         binding.tvAppName.typeface = typeFace
 
+//        FirestoreClass().checkIfExists()
+
         Handler().postDelayed({
             var currentUserID = FirestoreClass().getCurrentUserId()
             if(currentUserID.isNotEmpty()){

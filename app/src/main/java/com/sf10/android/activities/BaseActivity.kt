@@ -14,6 +14,8 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.sf10.android.R
+import com.sf10.android.firebase.FirestoreClass
+import com.sf10.android.models.User
 
 open class BaseActivity : AppCompatActivity() {
 

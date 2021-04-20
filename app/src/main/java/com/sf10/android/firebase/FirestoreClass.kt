@@ -12,6 +12,19 @@ import com.sf10.android.utils.Constants
 class FirestoreClass {
     private val mFireStore = FirebaseFirestore.getInstance()
 
+    fun getUser(): User? {
+        Log.d("User", "getUser called with user id = ${getCurrentUserId()}")
+        var user: User? = null
+        mFireStore.collection(Constants.USERS).document(getCurrentUserId()).get()
+            .addOnSuccessListener { document ->
+                if (document.data != null) {
+                    user = document.toObject(User::class.java)!! //Nepakeicia 17 eil reiksmes
+                    Log.d("User", "user got! he is = $user")
+                }
+            }
+        Log.d("User", "getUser will return $user")
+        return user
+    }
 
     fun registerUser(activity: BaseActivity, userInfo: User) {
         mFireStore.collection(Constants.USERS).document(getCurrentUserId()).get()
@@ -35,35 +48,11 @@ class FirestoreClass {
 
     }
 
-//    fun loadUserData(activity: BaseActivity) {
-//        mFireStore.collection(Constants.USERS)
-//            .document(getCurrentUserId()).get()
-//            .addOnSuccessListener {document ->
-//                val loggedInUser = document.toObject(User::class.java)!!
-//
-//                when(activity){
-//                    is SignInActivity -> {
-//                        activity.signInSuccess(loggedInUser)
-//                    }
-//                    is MainActivity -> {
-//                        activity.updateNavigationUserDetails(loggedInUser)
-//                    }
-//                    is MyProfileActivity -> {
-//                        activity.setUserDataInUI(loggedInUser)
-//                    }
-//                }
-//            }.addOnFailureListener {
-//                when(activity){
-//                    is SignInActivity -> {
-//                        activity.hideProgressDialog()
-//                    }
-//                    is MainActivity -> {
-//                        activity.hideProgressDialog()
-//                    }
-//                }
-//                Log.e("Sign in", "Error while signing in")
-//            }
-//    }
+    fun checkIfExists(){
+        if(getCurrentUserId() != "" && getUser() == null) {
+            FirebaseAuth.getInstance().signOut()
+        }
+    }
 
     fun getCurrentUserId(): String {
         var currentUser = FirebaseAuth.getInstance().currentUser
