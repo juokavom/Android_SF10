@@ -4,10 +4,14 @@
     <string name="please_click_again_to_exit">Please click back again to exit.</string>
     <string name="app_description">Play straight from 10 with your friends or complete strangers by joining private/public game sessions!</string>
     <string name="sign_up">SIGN UP</string>
-    <string name="sign_in">SIGN IN</string>
+    <string name="name">Username</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
 
-    <string name="generic_profile_pic"><![CDATA[https://firebasestorage.googleapis.com/v0/b/straightfrom10.appspot.com/o/profiles%2Fgeneric.png?alt=media&token=4c980577–26ee-49a7-857a-d83dfc092a3b]]></string>
     <string name="sign_up_description_text">Enter your credentials to register with us</string>
+    <string name="sign_in_description_text">Enter your credentials to sign in</string>
+    <string name="default_image"><![CDATA[https://firebasestorage.googleapis.com/v0/b/straightfrom10.appspot.com/o/profiles%2Fgeneric.png?alt=media&token=4c980577–26ee-49a7-857a-d83dfc092a3b]]></string>
+    <string name="sign_in">SIGN IN</string>
 
 
 </resources>

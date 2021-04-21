@@ -71,13 +71,13 @@ class IntroActivity : BaseActivity() {
                 }
             })
 
-//        binding.btnSignInIntro.setOnClickListener{
-//            startActivity(Intent(this, SignInActivity::class.java))
-//        }
-//
-//        binding.btnSignUpIntro.setOnClickListener{
-//            startActivity(Intent(this, SignUpActivity::class.java))
-//        }
+        binding.btnSignInIntro.setOnClickListener{
+            startActivity(Intent(this, SignInActivity::class.java))
+        }
+
+        binding.btnSignUpIntro.setOnClickListener{
+            startActivity(Intent(this, SignUpActivity::class.java))
+        }
     }
 
     private fun signInWithCredential(credential: AuthCredential) {
@@ -89,8 +89,7 @@ class IntroActivity : BaseActivity() {
                         firebaseUser.uid, firebaseUser.displayName!!,
                         firebaseUser.email!!, firebaseUser.photoUrl!!.toString()
                     )
-                    FirestoreClass().registerUser(this@IntroActivity, user, {
-                        Log.d("User", "REGISTER CALLBACK CALLED")
+                    FirestoreClass().registerUser(this@IntroActivity, user) {
                         startActivity(
                             Intent(
                                 this@IntroActivity,
@@ -98,7 +97,7 @@ class IntroActivity : BaseActivity() {
                             )
                         )
                         finish()
-                    })
+                    }
                 } else {
                     Toast.makeText(
                         this@IntroActivity, "Authentication failed. ${task.exception}",

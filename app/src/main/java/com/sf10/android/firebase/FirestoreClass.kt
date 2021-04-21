@@ -14,7 +14,7 @@ class FirestoreClass {
 
     fun getUser(callback: (User) -> Unit, error: () -> Unit) {
         Log.d("User", "getUser called with user id = ${getCurrentUserId()}")
-        if (getCurrentUserId() == "") error()
+        if (getCurrentUserId() == "" || !FirebaseAuth.getInstance().currentUser.isEmailVerified) error()
         else {
             mFireStore.collection(Constants.USERS).document(getCurrentUserId()).get()
                 .addOnSuccessListener { document ->
@@ -26,8 +26,7 @@ class FirestoreClass {
         }
     }
 
-    fun registerUser(activity: BaseActivity, userInfo: User, startMain: () -> Unit) {
-        activity.showProgressDialog("Signing in...")
+    fun registerUser(activity: BaseActivity, userInfo: User, callback: () -> Unit) {
         mFireStore.collection(Constants.USERS).document(getCurrentUserId()).get()
             .addOnSuccessListener { document ->
                 if (document.data != null) {
@@ -42,8 +41,22 @@ class FirestoreClass {
                             Log.e(activity.javaClass.simpleName, "Error writing document", e)
                         }
                 }
-                activity.hideProgressDialog()
-                startMain()
+                callback()
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "Fetching from Firestore failed")
+            }
+
+    }
+
+    fun loginUser(activity: BaseActivity, callback: () -> Unit) {
+        activity.showProgressDialog("Signing in...")
+        mFireStore.collection(Constants.USERS).document(getCurrentUserId()).get()
+            .addOnSuccessListener { document ->
+                if (document.data != null) {
+                    activity.hideProgressDialog()
+                    callback()
+                }
             }
             .addOnFailureListener { exception ->
                 Log.e("Firestore", "Fetching from Firestore failed")
