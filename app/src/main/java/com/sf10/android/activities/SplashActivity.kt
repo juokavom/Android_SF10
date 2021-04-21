@@ -22,12 +22,10 @@ class SplashActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
 
-
         val typeFace: Typeface = Typeface.createFromAsset(assets, "carbon bl.ttf")
         binding.tvAppName.typeface = typeFace
 
-//        FirestoreClass().checkIfExists()
-
+        FirestoreClass().logoutIfNotExist()
         Handler().postDelayed({
             var currentUserID = FirestoreClass().getCurrentUserId()
             if(currentUserID.isNotEmpty()){

@@ -85,14 +85,25 @@ class IntroActivity : BaseActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val firebaseUser: FirebaseUser = task.result!!.user!!
-                    val user = User(firebaseUser.uid, firebaseUser.displayName!!,
-                        firebaseUser.email!!, firebaseUser.photoUrl!!.toString())
-                    FirestoreClass().registerUser(this@IntroActivity, user)
-                    startActivity(Intent(this@IntroActivity, MainActivity::class.java))
-                    finish()
+                    val user = User(
+                        firebaseUser.uid, firebaseUser.displayName!!,
+                        firebaseUser.email!!, firebaseUser.photoUrl!!.toString()
+                    )
+                    FirestoreClass().registerUser(this@IntroActivity, user, {
+                        Log.d("User", "REGISTER CALLBACK CALLED")
+                        startActivity(
+                            Intent(
+                                this@IntroActivity,
+                                MainActivity::class.java
+                            )
+                        )
+                        finish()
+                    })
                 } else {
-                    Toast.makeText(this@IntroActivity, "Authentication failed. ${task.exception}",
-                    Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this@IntroActivity, "Authentication failed. ${task.exception}",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
     }
@@ -106,7 +117,8 @@ class IntroActivity : BaseActivity() {
             try {
                 val account = task.getResult(ApiException::class.java)!!
                 signInWithCredential(GoogleAuthProvider.getCredential(account.idToken!!, null))
-            } catch (e: ApiException) {}
+            } catch (e: ApiException) {
+            }
         } else {
             //Facebook
             callbackManager.onActivityResult(requestCode, resultCode, data)

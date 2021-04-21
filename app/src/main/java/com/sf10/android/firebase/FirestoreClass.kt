@@ -12,21 +12,22 @@ import com.sf10.android.utils.Constants
 class FirestoreClass {
     private val mFireStore = FirebaseFirestore.getInstance()
 
-    fun getUser(): User? {
+    fun getUser(callback: (User) -> Unit, error: () -> Unit) {
         Log.d("User", "getUser called with user id = ${getCurrentUserId()}")
-        var user: User? = null
-        mFireStore.collection(Constants.USERS).document(getCurrentUserId()).get()
-            .addOnSuccessListener { document ->
-                if (document.data != null) {
-                    user = document.toObject(User::class.java)!! //Nepakeicia 17 eil reiksmes
-                    Log.d("User", "user got! he is = $user")
+        if (getCurrentUserId() == "") error()
+        else {
+            mFireStore.collection(Constants.USERS).document(getCurrentUserId()).get()
+                .addOnSuccessListener { document ->
+                    Log.d("User", "getUser success listener = ${document}}")
+                    if (document.data != null) {
+                        callback(document.toObject(User::class.java)!!)
+                    } else error()
                 }
-            }
-        Log.d("User", "getUser will return $user")
-        return user
+        }
     }
 
-    fun registerUser(activity: BaseActivity, userInfo: User) {
+    fun registerUser(activity: BaseActivity, userInfo: User, startMain: () -> Unit) {
+        activity.showProgressDialog("Signing in...")
         mFireStore.collection(Constants.USERS).document(getCurrentUserId()).get()
             .addOnSuccessListener { document ->
                 if (document.data != null) {
@@ -41,17 +42,20 @@ class FirestoreClass {
                             Log.e(activity.javaClass.simpleName, "Error writing document", e)
                         }
                 }
+                activity.hideProgressDialog()
+                startMain()
             }
             .addOnFailureListener { exception ->
                 Log.e("Firestore", "Fetching from Firestore failed")
+                activity.hideProgressDialog()
             }
 
     }
 
-    fun checkIfExists(){
-        if(getCurrentUserId() != "" && getUser() == null) {
+    fun logoutIfNotExist() {
+        getUser({}, {
             FirebaseAuth.getInstance().signOut()
-        }
+        })
     }
 
     fun getCurrentUserId(): String {

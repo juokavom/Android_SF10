@@ -1,5 +1,6 @@
 package com.sf10.android.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -17,18 +18,19 @@ class MainActivity : BaseActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val user: User? = FirestoreClass().getUser()
-
-//        binding.uid.text = user.id
-//        binding.email.text = user.email
-//        binding.username.text = user.username
-
-//        Log.d("User", "image = " + user.image)
-        Log.d("User", "object = " + user)
+        FirestoreClass().getUser({ user ->
+            Log.d("User", "object = $user")
+            binding.uid.text = user.id
+            binding.email.text = user.email
+            binding.username.text = user.username
+        }, {
+            Log.d("User", "does not exist")
+        })
 
         binding.logout.setOnClickListener {
             AuthUI.getInstance().signOut(this)
-//            finish()
+            startActivity(Intent(this, IntroActivity::class.java))
+            finish()
         }
     }
 }
