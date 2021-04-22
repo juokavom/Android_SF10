@@ -13,6 +13,9 @@
     <string name="default_image"><![CDATA[https://firebasestorage.googleapis.com/v0/b/straightfrom10.appspot.com/o/profiles%2Fgeneric.png?alt=media&token=4c980577–26ee-49a7-857a-d83dfc092a3b]]></string>
     <string name="sign_in">SIGN IN</string>
     <string name="reset_password">Reset password</string>
+    <string name="nav_my_profile">My Profile</string>
+    <string name="nav_sign_out">Sign out</string>
+    <string name="image_contentDescription">image</string>
 
 
 </resources>
