@@ -14,7 +14,9 @@ class FirestoreClass {
 
     fun getUser(callback: (User) -> Unit, error: () -> Unit) {
         Log.d("User", "getUser called with user id = ${getCurrentUserId()}")
-        if (getCurrentUserId() == "" || !FirebaseAuth.getInstance().currentUser.isEmailVerified) error()
+        if (getCurrentUserId() == "" ||
+            (!FirebaseAuth.getInstance().currentUser!!.isEmailVerified && FirebaseAuth.getInstance().currentUser!!.providerData[1].providerId == "password")
+        ) error() // google.com facebook.com password
         else {
             mFireStore.collection(Constants.USERS).document(getCurrentUserId()).get()
                 .addOnSuccessListener { document ->

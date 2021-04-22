@@ -23,7 +23,7 @@ class SignUpActivity : BaseActivity() {
         setUpActionBar()
 
         binding.btnSignUp.setOnClickListener {
-            hideKeyboard()
+            hideKeyboard(this@SignUpActivity)
             registerUser(binding)
         }
     }
@@ -66,7 +66,7 @@ class SignUpActivity : BaseActivity() {
     private fun validateForm(name: String, email: String, password: String): Boolean {
         return when {
             TextUtils.isEmpty(name) -> {
-                showErrorSnackBar("Please enter name")
+                showErrorSnackBar("Please enter username")
                 false
             }
             TextUtils.isEmpty(email) -> {

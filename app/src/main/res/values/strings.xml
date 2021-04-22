@@ -12,6 +12,7 @@
     <string name="sign_in_description_text">Enter your credentials to sign in</string>
     <string name="default_image"><![CDATA[https://firebasestorage.googleapis.com/v0/b/straightfrom10.appspot.com/o/profiles%2Fgeneric.png?alt=media&token=4c980577–26ee-49a7-857a-d83dfc092a3b]]></string>
     <string name="sign_in">SIGN IN</string>
+    <string name="reset_password">Reset password</string>
 
 
 </resources>

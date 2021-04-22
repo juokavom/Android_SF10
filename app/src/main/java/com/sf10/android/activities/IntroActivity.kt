@@ -58,7 +58,7 @@ class IntroActivity : BaseActivity() {
             callbackManager,
             object : FacebookCallback<LoginResult> {
                 override fun onSuccess(loginResult: LoginResult) {
-                    Log.d("TAG", "facebook:onSuccess:$loginResult")
+                    Log.d("TAG", "facebook:onSuccess:${loginResult.accessToken.token}")
                     signInWithCredential(FacebookAuthProvider.getCredential(loginResult.accessToken.token))
                 }
 

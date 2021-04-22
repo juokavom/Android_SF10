@@ -1,13 +1,14 @@
 package com.sf10.android.activities
 
+import android.app.Dialog
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.view.ViewGroup
+import android.view.Window
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.sf10.android.R
 import com.sf10.android.databinding.ActivitySignInBinding
 import com.sf10.android.firebase.FirestoreClass
@@ -24,8 +25,18 @@ class SignInActivity : BaseActivity() {
 
 
         binding.btnSignIn.setOnClickListener {
-            hideKeyboard()
+            hideKeyboard(this@SignInActivity)
             signInRegisteredUser()
+        }
+
+        binding.resetPassword.setOnClickListener {
+            val dialog = Dialog(this)
+            dialog.setContentView(R.layout.dialog_reset_password)
+            dialog.show()
+
+            val window: Window = dialog.window!!
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
         }
 
         setUpActionBar()
