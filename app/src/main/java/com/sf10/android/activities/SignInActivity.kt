@@ -5,12 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.Button
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.sf10.android.R
 import com.sf10.android.databinding.ActivitySignInBinding
+import com.sf10.android.databinding.DialogResetPasswordBinding
 import com.sf10.android.firebase.FirestoreClass
 import com.sf10.android.models.User
 
@@ -33,13 +36,48 @@ class SignInActivity : BaseActivity() {
             val dialog = Dialog(this)
             dialog.setContentView(R.layout.dialog_reset_password)
             dialog.show()
-
             val window: Window = dialog.window!!
-            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-
+            window.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            handlePasswordReset(dialog)
         }
 
         setUpActionBar()
+    }
+
+    private fun handlePasswordReset(dialog: Dialog) {
+        Log.d("User", "Reset password called")
+        val resetButton = dialog.findViewById<Button>(R.id.btn_reset)
+        resetButton.setOnClickListener {
+            Log.d("User", "Pasword reset handler called")
+            hideKeyboard(this@SignInActivity)
+            val emailView =
+                dialog.findViewById<androidx.appcompat.widget.AppCompatEditText>(R.id.reset_password_email)
+            val email: String = emailView.text.toString().trim { it <= ' ' }
+            if (email.isEmpty()) {
+                Toast.makeText(
+                    baseContext, "Enter email to reset password",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                    .addOnSuccessListener {
+                        Toast.makeText(
+                            baseContext, "Password reset email was sent to your inbox!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        dialog.dismiss()
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(
+                            baseContext, "Password reset failed: ${e.message.toString()}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+            }
+        }
     }
 
     private fun signInRegisteredUser() {
