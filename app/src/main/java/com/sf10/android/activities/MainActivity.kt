@@ -4,9 +4,12 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
 import androidx.core.view.GravityCompat
+import androidx.core.view.children
 import com.bumptech.glide.Glide
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.navigation.NavigationView
@@ -22,7 +25,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private lateinit var binding: ActivityMainBinding
     private var mUser: User? = null
-    private val MY_PROFILE_REQUEST = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +41,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode == MY_PROFILE_REQUEST && resultCode == RESULT_OK) {
+        if(requestCode == Constants.MY_PROFILE_REQUEST && resultCode == RESULT_OK) {
             mUser = data!!.getParcelableExtra(Constants.USER_CODE)
             updateNavigationUserDetails()
         }
@@ -65,6 +67,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             .into(findViewById<CircleImageView>(R.id.iv_user_image))
 
         findViewById<TextView>(R.id.tv_username).text = mUser!!.username
+        binding.navView.menu.findItem(R.id.nav_score).title = mUser!!.score.toString()
     }
 
 
@@ -99,13 +102,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.id.nav_my_profile -> {
                 val myProfileIntent = Intent(this, MyProfileActivity::class.java)
                 myProfileIntent.putExtra(Constants.USER_CODE, mUser)
-                startActivityForResult(myProfileIntent, MY_PROFILE_REQUEST)
+                startActivityForResult(myProfileIntent, Constants.MY_PROFILE_REQUEST)
             }
             R.id.nav_sign_out -> {
                 logout()
             }
+            R.id.nav_score -> return false
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START)
-        return true
+        return false
     }
 }
