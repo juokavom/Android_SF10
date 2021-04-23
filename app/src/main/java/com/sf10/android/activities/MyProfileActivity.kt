@@ -11,6 +11,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.webkit.MimeTypeMap
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
@@ -20,6 +21,7 @@ import com.google.firebase.storage.StorageReference
 import com.sf10.android.R
 import com.sf10.android.databinding.ActivityMyProfileBinding
 import com.sf10.android.firebase.FirestoreClass
+import com.sf10.android.firebase.Storage
 import com.sf10.android.models.User
 import com.sf10.android.utils.Constants
 import com.sf10.android.utils.ImageHandler
@@ -28,9 +30,7 @@ import java.io.IOException
 import java.util.*
 
 //TODO: Delete old photo after new is uploaded
-//TODO: Update other fields when submitting
 //TODO: Update firestore rules
-//TODO: move upload to firestore class
 
 class MyProfileActivity : BaseActivity() {
     private lateinit var binding: ActivityMyProfileBinding
@@ -70,15 +70,41 @@ class MyProfileActivity : BaseActivity() {
         }
 
         binding.btnUpdate.setOnClickListener {
-            if (mSelectedImageFileUri != null) {
-                if (validateImage()) {
-                    Log.d("Image", "Old uri = $mSelectedImageFileUri")
-                    mSelectedImageFileUri =
-                        ImageHandler().process(mSelectedImageFileUri!!, 500, this)
-                    Log.d("Image", "New uri = $mSelectedImageFileUri")
-                    uploadUserImage()
-                }
+            handleUpdateAction()
+        }
+    }
+
+    private fun handleUpdateAction() {
+        if (binding.etName.text.toString() != mUser!!.username) {
+            mUser!!.username = binding.etName.text.toString()
+        }
+        if (mSelectedImageFileUri != null) {
+            if (validateImage()) {
+                mSelectedImageFileUri =
+                    ImageHandler().process(mSelectedImageFileUri!!, 500, this)
+                Storage().uploadUserImage(this, mSelectedImageFileUri, { uri ->
+                    mUser!!.image = uri.toString()
+                    mSelectedImageFileUri = null
+                    updateUser()
+                }, { e ->
+                    Toast.makeText(
+                        this@MyProfileActivity,
+                        e.message,
+                        Toast.LENGTH_LONG
+                    ).show()
+                    hideProgressDialog()
+                })
             }
+        } else {
+            updateUser()
+        }
+    }
+
+    private fun updateUser() {
+        FirestoreClass().updateUser(mUser!!) {
+            setResult(RESULT_OK)
+            hideProgressDialog()
+            finish()
         }
     }
 
@@ -155,53 +181,8 @@ class MyProfileActivity : BaseActivity() {
         }
     }
 
-    private fun uploadUserImage() {
-        Log.d("Image", "Upload image called, uri = $mSelectedImageFileUri")
-
-        if (mSelectedImageFileUri != null) {
-            showProgressDialog(resources.getString(R.string.please_wait))
-            val sRef: StorageReference =
-                FirebaseStorage.getInstance().reference.child(
-                    "profiles/USER_IMAGE${UUID.randomUUID()}.jpeg"
-                )
-
-            sRef.putFile(mSelectedImageFileUri!!)
-                .addOnSuccessListener { taskSnapshot ->
-                    Log.i(
-                        "Image",
-                        "Firebase image url = ${taskSnapshot.metadata!!.reference!!.downloadUrl}"
-                    )
-
-                taskSnapshot.metadata!!.reference!!.downloadUrl.addOnSuccessListener { uri ->
-                    Log.i("Image", "Downloadable url = $uri")
-                    mUser!!.image = uri.toString()
-                    FirestoreClass().updateUser(mUser!!) {
-                        setUserDataInUI()
-                        setResult(RESULT_OK)
-                        hideProgressDialog()
-                        finish()
-                    }
-                }.addOnFailureListener { exception ->
-                    Toast.makeText(
-                        this@MyProfileActivity,
-                        exception.message,
-                        Toast.LENGTH_LONG
-                    ).show()
-
-                    hideProgressDialog()
-                }
-            } .addOnFailureListener{taskSnapshot ->
-                    Log.i(
-                        "Image",
-                        "Firebase upload failed, code = ${taskSnapshot.message.toString()}"
-                    )
-                }
-        }
-    }
-
     private fun getFileExtension(uri: Uri): String? {
         return MimeTypeMap.getSingleton()
             .getExtensionFromMimeType(contentResolver.getType(uri))
     }
-
 }

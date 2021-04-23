@@ -39,6 +39,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+//        Log.d("Image", "Activity result: req = $requestCode, result = $resultCode")
+
         if(requestCode == MY_PROFILE_REQUEST && resultCode == RESULT_OK) {
             updateUser()
         }
@@ -48,6 +50,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private fun updateUser(){
         fetchUser { user ->
             mUser = user
+            Log.d("User", "User updation, data = $mUser")
             updateNavigationUserDetails()
         }
     }
@@ -107,5 +110,4 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
-
 }
