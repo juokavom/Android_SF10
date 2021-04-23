@@ -51,6 +51,16 @@ class FirestoreClass {
 
     }
 
+    fun updateUser(userInfo: User, callback: () -> Unit) {
+        mFireStore.collection(Constants.USERS)
+            .document(getCurrentUserId()).set(userInfo, SetOptions.merge())
+            .addOnSuccessListener {
+                callback()
+            }.addOnFailureListener { e ->
+                Log.e("User", "Error updating user document", e)
+            }
+    }
+
     fun loginUser(activity: BaseActivity, callback: () -> Unit) {
         activity.showProgressDialog("Signing in...")
         mFireStore.collection(Constants.USERS).document(getCurrentUserId()).get()

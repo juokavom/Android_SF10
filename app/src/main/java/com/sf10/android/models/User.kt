@@ -5,10 +5,10 @@ import android.os.Parcelable
 
 @Parcelize
 data class User(
-    val id: String = "",
-    val username: String = "",
-    val email: String = "",
-    val image: String = ""
+    var id: String = "",
+    var username: String = "",
+    var email: String = "",
+    var image: String = ""
 ) : Parcelable {
     override fun toString(): String {
         return "User(id='$id', username='$username', email='$email', image='$image')"

@@ -15,12 +15,14 @@ import com.sf10.android.R
 import com.sf10.android.databinding.ActivityMainBinding
 import com.sf10.android.firebase.FirestoreClass
 import com.sf10.android.models.User
+import com.sf10.android.utils.Constants
 import de.hdodenhof.circleimageview.CircleImageView
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener  {
 
     private lateinit var binding: ActivityMainBinding
     private var mUser: User? = null
+    private val MY_PROFILE_REQUEST = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,19 +33,23 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         binding.navView.setNavigationItemSelectedListener(this)
 
+        updateUser()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == MY_PROFILE_REQUEST && resultCode == RESULT_OK) {
+            updateUser()
+        }
+
+    }
+
+    private fun updateUser(){
         fetchUser { user ->
             mUser = user
             updateNavigationUserDetails()
         }
-    }
-
-    private fun fetchUser(setUser: (User) -> Unit) {
-        FirestoreClass().getUser({ user ->
-            Log.d("User", "user object = $user")
-            setUser(user)
-        }, {
-            Log.d("User", "does not exist")
-        })
     }
 
     private fun logout() {
@@ -90,7 +96,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_my_profile -> {
-//                startActivity(Intent(this, MyProfileActivity::class.java))
+                val myProfileIntent = Intent(this, MyProfileActivity::class.java)
+                myProfileIntent.putExtra(Constants.USER_CODE, mUser)
+                startActivityForResult(myProfileIntent, MY_PROFILE_REQUEST)
             }
             R.id.nav_sign_out -> {
                 logout()

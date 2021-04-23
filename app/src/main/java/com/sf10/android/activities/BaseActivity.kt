@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
@@ -16,6 +17,8 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.sf10.android.R
+import com.sf10.android.firebase.FirestoreClass
+import com.sf10.android.models.User
 
 
 open class BaseActivity : AppCompatActivity() {
@@ -87,5 +90,14 @@ open class BaseActivity : AppCompatActivity() {
             view = View(activity)
         }
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    fun fetchUser(setUser: (User) -> Unit) {
+        FirestoreClass().getUser({ user ->
+            Log.d("User", "user object = $user")
+            setUser(user)
+        }, {
+            Log.d("User", "does not exist")
+        })
     }
 }
