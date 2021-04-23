@@ -29,9 +29,6 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 
-//TODO: Delete old photo after new is uploaded
-//TODO: Update firestore rules
-
 class MyProfileActivity : BaseActivity() {
     private lateinit var binding: ActivityMyProfileBinding
 
@@ -83,15 +80,12 @@ class MyProfileActivity : BaseActivity() {
                 mSelectedImageFileUri =
                     ImageHandler().process(mSelectedImageFileUri!!, 500, this)
                 Storage().uploadUserImage(this, mSelectedImageFileUri, { uri ->
+                    if(mUser!!.image.contains(Constants.USER_IMAGE, ignoreCase = true)) Storage().deleteUserImage(mUser!!.image)
                     mUser!!.image = uri.toString()
                     mSelectedImageFileUri = null
                     updateUser()
-                }, { e ->
-                    Toast.makeText(
-                        this@MyProfileActivity,
-                        e.message,
-                        Toast.LENGTH_LONG
-                    ).show()
+                }, {
+                    showErrorSnackBar("You can only upload images under 1MB")
                     hideProgressDialog()
                 })
             }
@@ -102,7 +96,9 @@ class MyProfileActivity : BaseActivity() {
 
     private fun updateUser() {
         FirestoreClass().updateUser(mUser!!) {
-            setResult(RESULT_OK)
+            val passBackIntent = Intent()
+            passBackIntent.putExtra(Constants.USER_CODE, mUser)
+            setResult(RESULT_OK, passBackIntent)
             hideProgressDialog()
             finish()
         }

@@ -2,22 +2,29 @@ package com.sf10.android.firebase
 
 import android.net.Uri
 import android.util.Log
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.sf10.android.R
 import com.sf10.android.activities.BaseActivity
-import java.lang.Exception
+import com.sf10.android.utils.Constants
 import java.util.*
+
 
 class Storage {
     private val mFireStore = FirebaseFirestore.getInstance()
 
+    fun deleteUserImage(url: String){
+        val firebaseStorage = FirebaseStorage.getInstance()
+        val storageReference = firebaseStorage.getReferenceFromUrl(url)
+        storageReference.delete().addOnSuccessListener {
+            Log.e("Picture","#deleted")
+        }
+    }
+
     fun uploadUserImage(
         activity: BaseActivity, selectedImageFileUri: Uri?,
-        onSuccess: (Uri) -> Unit, onError: (Exception) -> Unit
+        onSuccess: (Uri) -> Unit, onError: () -> Unit
     ) {
         Log.d("Image", "Upload image called, uri = $selectedImageFileUri")
 
@@ -25,10 +32,10 @@ class Storage {
             activity.showProgressDialog(activity.resources.getString(R.string.please_wait))
             val sRef: StorageReference =
                 FirebaseStorage.getInstance().reference.child(
-                    "profiles/USER_IMAGE${UUID.randomUUID()}.jpeg"
+                    "profiles/${Constants.USER_IMAGE}${UUID.randomUUID()}.jpeg"
                 )
 
-            sRef.putFile(selectedImageFileUri!!)
+            sRef.putFile(selectedImageFileUri)
                 .addOnSuccessListener { taskSnapshot ->
                     Log.i(
                         "Image",
@@ -37,14 +44,9 @@ class Storage {
 
                     taskSnapshot.metadata!!.reference!!.downloadUrl.addOnSuccessListener { uri ->
                         onSuccess(uri)
-                    }.addOnFailureListener { exception ->
-                        onError(exception)
                     }
-                }.addOnFailureListener { taskSnapshot ->
-                    Log.i(
-                        "Image",
-                        "Firebase upload failed, code = ${taskSnapshot.message.toString()}"
-                    )
+                }.addOnFailureListener {
+                    onError()
                 }
         }
     }

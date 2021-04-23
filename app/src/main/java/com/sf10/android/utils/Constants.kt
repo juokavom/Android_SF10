@@ -5,4 +5,5 @@ import java.security.MessageDigest
 object Constants {
     const val USERS: String = "users"
     const val USER_CODE: String = "user_object"
+    const val USER_IMAGE: String = "USER_IMAGE"
 }
