@@ -15,9 +15,15 @@
     <string name="reset_password">Reset password</string>
     <string name="nav_my_profile">My Profile</string>
     <string name="nav_sign_out">Sign out</string>
+    <string name="nav_report_bug">Report issue</string>
     <string name="image_contentDescription">image</string>
     <string name="update">UPDATE</string>
     <string name="my_profile_title">My Profile</string>
+
+    <string name="join_game">JOIN GAME</string>
+    <string name="create_game">CREATE GAME</string>
+    <string name="game_code">GAME CODE</string>
+
 
 
 </resources>

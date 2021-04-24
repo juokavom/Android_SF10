@@ -108,7 +108,7 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="20dp"
-                    android:background="@drawable/shape_button_rounded"
+                    android:background="@drawable/shape_button_rounded_green"
                     android:foreground="?attr/selectableItemBackground"
                     android:gravity="center"
                     android:paddingTop="8dp"
