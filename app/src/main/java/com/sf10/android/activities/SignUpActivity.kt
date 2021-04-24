@@ -1,17 +1,14 @@
 package com.sf10.android.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
-import android.view.WindowManager
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.sf10.android.R
 import com.sf10.android.databinding.ActivitySignUpBinding
-import com.sf10.android.firebase.FirestoreClass
+import com.sf10.android.firebase.Firestore
 import com.sf10.android.models.User
 
 class SignUpActivity : BaseActivity() {
@@ -43,7 +40,7 @@ class SignUpActivity : BaseActivity() {
                             firebaseUser.uid, name, firebaseUser.email!!,
                             getString(R.string.default_image)
                         )
-                        FirestoreClass().registerUser(this@SignUpActivity, user) {
+                        Firestore().registerUser(this@SignUpActivity, user) {
                             firebaseUser.sendEmailVerification()
                             startActivity(Intent(this, SignInActivity::class.java))
                             hideProgressDialog()

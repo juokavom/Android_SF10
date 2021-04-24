@@ -1,25 +1,19 @@
 package com.sf10.android.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.GravityCompat
-import androidx.core.view.children
 import com.bumptech.glide.Glide
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.auth.FirebaseAuth
 import com.sf10.android.R
 import com.sf10.android.databinding.ActivityMainBinding
 import com.sf10.android.databinding.ContentMainBinding
-import com.sf10.android.firebase.FirestoreClass
+import com.sf10.android.firebase.Realtime
 import com.sf10.android.models.User
 import com.sf10.android.utils.Constants
 import de.hdodenhof.circleimageview.CircleImageView
@@ -28,6 +22,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var contentWindowBinding: ContentMainBinding
+    private val mRealtime = Realtime()
     private var mUser: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +39,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         updateUser()
 
         contentWindowBinding.btnJoinGame.setOnClickListener {
+            mRealtime.unSubscribeOnChanges()
             hideKeyboard(this)
             if (contentWindowBinding.etGameId.text.toString().isNotEmpty()) {
                 Toast.makeText(
@@ -57,7 +53,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
 
         contentWindowBinding.btnCreateGame.setOnClickListener {
-
+//            Realtime().generateNewGameRoom()
+            mRealtime.subscribeOnChanges()
         }
     }
 

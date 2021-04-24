@@ -3,7 +3,6 @@ package com.sf10.android.activities
 
 import android.app.Activity
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -17,7 +16,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.sf10.android.R
-import com.sf10.android.firebase.FirestoreClass
+import com.sf10.android.firebase.Firestore
 import com.sf10.android.models.User
 
 
@@ -93,7 +92,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun fetchUser(setUser: (User) -> Unit) {
-        FirestoreClass().getUser({ user ->
+        Firestore().getUser({ user ->
             Log.d("User", "user object = $user")
             setUser(user)
         }, {

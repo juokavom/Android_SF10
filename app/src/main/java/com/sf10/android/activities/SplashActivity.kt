@@ -6,9 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.WindowManager
-import com.sf10.android.R
 import com.sf10.android.databinding.ActivitySplashBinding
-import com.sf10.android.firebase.FirestoreClass
+import com.sf10.android.firebase.Firestore
 
 class SplashActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySplashBinding
@@ -25,9 +24,9 @@ class SplashActivity : AppCompatActivity() {
         val typeFace: Typeface = Typeface.createFromAsset(assets, "carbon bl.ttf")
         binding.tvAppName.typeface = typeFace
 
-        FirestoreClass().logoutIfNotExist()
+        Firestore().logoutIfNotExist()
         Handler().postDelayed({
-            var currentUserID = FirestoreClass().getCurrentUserId()
+            var currentUserID = Firestore().getCurrentUserId()
             if(currentUserID.isNotEmpty()){
                 startActivity(Intent(this, MainActivity::class.java))
             } else {

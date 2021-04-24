@@ -9,7 +9,7 @@ import com.sf10.android.activities.BaseActivity
 import com.sf10.android.models.User
 import com.sf10.android.utils.Constants
 
-class FirestoreClass {
+class Firestore {
     private val mFireStore = FirebaseFirestore.getInstance()
 
     fun getUser(callback: (User) -> Unit, error: () -> Unit) {

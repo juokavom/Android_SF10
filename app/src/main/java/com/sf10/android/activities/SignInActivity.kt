@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
@@ -13,8 +12,7 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.sf10.android.R
 import com.sf10.android.databinding.ActivitySignInBinding
-import com.sf10.android.databinding.DialogResetPasswordBinding
-import com.sf10.android.firebase.FirestoreClass
+import com.sf10.android.firebase.Firestore
 import com.sf10.android.models.User
 
 class SignInActivity : BaseActivity() {
@@ -90,7 +88,7 @@ class SignInActivity : BaseActivity() {
                     if (task.isSuccessful) {
                         Log.d("Sign in", "signInWithEmail:success")
                         if (task.result!!.user!!.isEmailVerified) {
-                            FirestoreClass().loginUser(this@SignInActivity) {
+                            Firestore().loginUser(this@SignInActivity) {
                                 startActivity(
                                     Intent(
                                         this@SignInActivity,

@@ -3,31 +3,22 @@ package com.sf10.android.activities
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.webkit.MimeTypeMap
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.net.toFile
 import com.bumptech.glide.Glide
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.sf10.android.R
 import com.sf10.android.databinding.ActivityMyProfileBinding
-import com.sf10.android.firebase.FirestoreClass
+import com.sf10.android.firebase.Firestore
 import com.sf10.android.firebase.Storage
 import com.sf10.android.models.User
 import com.sf10.android.utils.Constants
 import com.sf10.android.utils.ImageHandler
-import java.io.File
 import java.io.IOException
-import java.util.*
 
 class MyProfileActivity : BaseActivity() {
     private lateinit var binding: ActivityMyProfileBinding
@@ -95,7 +86,7 @@ class MyProfileActivity : BaseActivity() {
     }
 
     private fun updateUser() {
-        FirestoreClass().updateUser(mUser!!) {
+        Firestore().updateUser(mUser!!) {
             val passBackIntent = Intent()
             passBackIntent.putExtra(Constants.USER_CODE, mUser)
             setResult(RESULT_OK, passBackIntent)
