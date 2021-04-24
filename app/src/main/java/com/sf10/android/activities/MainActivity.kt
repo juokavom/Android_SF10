@@ -129,13 +129,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             R.id.nav_score -> return false
             R.id.nav_report_bug -> {
-                //TODO: implement report contact form
-                Toast.makeText(
-                    this@MainActivity, "Thank you for good intentions! " +
-                            "Unfortunately report form is not yet ready. Please contact us on j.akramas@gmail.com.",
-                    Toast.LENGTH_LONG
-                ).show()
-                return false
+                startActivity(Intent(this, ReportActivity::class.java))
             }
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START)

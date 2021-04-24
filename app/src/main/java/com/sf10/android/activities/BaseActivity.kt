@@ -3,6 +3,7 @@ package com.sf10.android.activities
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log

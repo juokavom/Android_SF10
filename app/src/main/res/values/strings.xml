@@ -5,6 +5,7 @@
     <string name="app_description">Play straight from 10 with your friends or complete strangers by joining private/public game sessions!</string>
     <string name="sign_up">SIGN UP</string>
     <string name="name">Username</string>
+    <string name="description">Description</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
 
@@ -18,12 +19,13 @@
     <string name="nav_report_bug">Report issue</string>
     <string name="image_contentDescription">image</string>
     <string name="update">UPDATE</string>
+    <string name="report">SEND REPORT</string>
     <string name="my_profile_title">My Profile</string>
+    <string name="report_issue_title">Report issue</string>
 
     <string name="join_game">JOIN GAME</string>
     <string name="create_game">CREATE GAME</string>
     <string name="game_code">GAME CODE</string>
-
 
 
 </resources>

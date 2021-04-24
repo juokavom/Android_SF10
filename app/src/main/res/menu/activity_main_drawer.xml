@@ -13,13 +13,14 @@
             android:title="@string/nav_my_profile" />
 
         <item
-            android:id="@+id/nav_sign_out"
-            android:icon="@drawable/ic_logout_24"
-            android:title="@string/nav_sign_out" />
-        <item
             android:id="@+id/nav_report_bug"
             android:icon="@drawable/ic_bug_24"
             android:title="@string/nav_report_bug" />
+
+        <item
+            android:id="@+id/nav_sign_out"
+            android:icon="@drawable/ic_logout_24"
+            android:title="@string/nav_sign_out" />
 
     </group>
 </menu>

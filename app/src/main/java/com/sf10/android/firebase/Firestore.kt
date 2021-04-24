@@ -1,11 +1,13 @@
 package com.sf10.android.firebase
 
 import android.util.Log
+import android.widget.Toast
 import com.facebook.internal.WebDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.sf10.android.activities.BaseActivity
+import com.sf10.android.models.Report
 import com.sf10.android.models.User
 import com.sf10.android.utils.Constants
 
@@ -92,4 +94,20 @@ class Firestore {
         return currentUserID
     }
 
+    fun submitReport(activity: BaseActivity, report: Report) {
+        activity.showProgressDialog("Submitting...")
+        mFireStore.collection(Constants.REPORTS).add(report)
+            .addOnSuccessListener {
+                activity.hideProgressDialog()
+                Toast.makeText(
+                    activity, "Report submitted successfully! Thank you!",
+                    Toast.LENGTH_LONG
+                ).show()
+                activity.finish()
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                activity.showErrorSnackBar(e.message.toString())
+            }
+    }
 }
