@@ -13,8 +13,6 @@ import com.google.android.material.navigation.NavigationView
 import com.sf10.android.R
 import com.sf10.android.databinding.ActivityMainBinding
 import com.sf10.android.databinding.ContentMainBinding
-import com.sf10.android.firebase.Realtime
-import com.sf10.android.models.Card
 import com.sf10.android.models.User
 import com.sf10.android.utils.Constants
 import de.hdodenhof.circleimageview.CircleImageView
@@ -23,7 +21,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var contentWindowBinding: ContentMainBinding
-    private val mRealtime = Realtime()
     private var mUser: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,8 +50,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
 
         contentWindowBinding.btnCreateGame.setOnClickListener {
-//            startActivity(Intent(this, SessionActivity::class.java))
-//            finish()
+            val intent = Intent(this, RoomActivity::class.java)
+            intent.putExtra(Constants.USER_CODE, mUser)
+            intent.putExtra(Constants.IS_CREATOR, true)
+            startActivity(intent)
+            finish()
         }
     }
 

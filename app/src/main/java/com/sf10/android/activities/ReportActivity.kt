@@ -8,6 +8,7 @@ import com.sf10.android.databinding.ActivityMyProfileBinding
 import com.sf10.android.databinding.ActivityReportBinding
 import com.sf10.android.firebase.Firestore
 import com.sf10.android.models.Report
+import com.sf10.android.utils.Utils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -29,7 +30,7 @@ class ReportActivity : BaseActivity() {
                     this,
                     Report(
                         getCurrentUserID(),
-                        SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Date()).toString(),
+                        Utils().getCurrentDateTime(),
                         issue
                     )
                 )

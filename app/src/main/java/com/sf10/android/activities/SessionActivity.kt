@@ -12,19 +12,11 @@ import com.sf10.android.utils.SecretConstants
 
 class SessionActivity : BaseActivity() {
     private lateinit var binding: ActivitySessionBinding
-    private lateinit var realtimeDB: Realtime
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySessionBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        realtimeDB = Realtime()
-//        val gameStateListener = realtimeDB.createEventListener { ds ->
-//            Log.d("Realtime", "Changes found = ${ds.value}")
-//        }
-
-        realtimeDB.createSession(Session())
     }
 }
