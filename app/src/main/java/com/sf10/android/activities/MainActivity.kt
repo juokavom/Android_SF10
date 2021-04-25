@@ -14,6 +14,7 @@ import com.sf10.android.R
 import com.sf10.android.databinding.ActivityMainBinding
 import com.sf10.android.databinding.ContentMainBinding
 import com.sf10.android.firebase.Realtime
+import com.sf10.android.models.Card
 import com.sf10.android.models.User
 import com.sf10.android.utils.Constants
 import de.hdodenhof.circleimageview.CircleImageView
@@ -39,7 +40,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         updateUser()
 
         contentWindowBinding.btnJoinGame.setOnClickListener {
-            mRealtime.unSubscribeOnChanges()
             hideKeyboard(this)
             if (contentWindowBinding.etGameId.text.toString().isNotEmpty()) {
                 Toast.makeText(
@@ -53,8 +53,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
 
         contentWindowBinding.btnCreateGame.setOnClickListener {
-//            Realtime().generateNewGameRoom()
-            mRealtime.subscribeOnChanges()
+//            startActivity(Intent(this, SessionActivity::class.java))
+//            finish()
         }
     }
 
