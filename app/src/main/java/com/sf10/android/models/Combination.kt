@@ -11,17 +11,21 @@ data class Combination(
     var suit: Suit = Suit.NONE
 ) : Parcelable, Comparable<Combination> {
     override fun compareTo(other: Combination): Int {
-        if (hand.id == other.hand.id) {
-            when (hand) {
-                Hand.NONE -> return 0
-                Hand.HIGH_CARD -> return firstCard.rank.compareTo(other.firstCard.rank)
-                Hand.ONE_PAIR -> return firstCard.rank.compareTo(other.firstCard.rank)
-                Hand.TWO_PAIR -> {
-                    val firsCardsCompareResult = firstCard.rank.compareTo(other.firstCard.rank)
-                    return if (firsCardsCompareResult == 0) secondCard.rank.compareTo(other.secondCard.rank) else firsCardsCompareResult
-                }
+        val handsCompareResult: Int = hand.id.compareTo(other.hand.id)
+        return if (handsCompareResult != 0) handsCompareResult else when (hand) {
+            Hand.NONE -> 0
+            Hand.HIGH_CARD,
+            Hand.ONE_PAIR,
+            Hand.THREE_OF_A_KIND,
+            Hand.STRAIGHT,
+            Hand.FOUR_OF_A_KIND -> firstCard.rank.id.compareTo(other.firstCard.rank.id)
+            Hand.TWO_PAIR, Hand.FULL_HOUSE -> {
+                val firsCardsCompareResult = firstCard.rank.id.compareTo(other.firstCard.rank.id)
+                if (firsCardsCompareResult != 0) firsCardsCompareResult else secondCard.rank.id.compareTo(
+                    other.secondCard.rank.id
+                )
             }
-        } else if (hand.id < other.hand.id) return -1
-        else return 1
+            Hand.FLUSH, Hand.STRAIGHT_FLUSH, Hand.ROYAL_FLUSH -> 0
+        }
     }
 }
