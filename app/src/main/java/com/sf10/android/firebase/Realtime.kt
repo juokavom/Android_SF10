@@ -23,6 +23,16 @@ class Realtime {
         privateCardsReference = dbReference.child(Constants.PRIVATE_PLAYER_CARDS).child(Utils().getCurrentUserId())
     }
 
+    fun joinSession(roomId: String){
+        mRealTime.getReference(roomId).child(roomId).get().addOnSuccessListener {
+            Log.d("Realtime", "Room exist")
+        }.addOnFailureListener {
+            Log.d("Realtime", "Room doesn't exist")
+        }
+
+    }
+
+    //Privaciom kortom
     fun createEventListener(callback: (DataSnapshot) -> Unit): ValueEventListener {
         return (object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -36,19 +46,18 @@ class Realtime {
         })
     }
 
-    fun createChildListener(callback: (DataSnapshot) -> Unit): ChildEventListener {
+    fun createChildListener(callback: (DataSnapshot, Int) -> Unit): ChildEventListener {
         return (object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-//                TODO("Not yet implemented")
+                callback(snapshot, Constants.UPDATE)
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                Log.d("Realtime", "Data changed = ${snapshot.key}:${snapshot.value}")
-                callback(snapshot)
+                callback(snapshot, Constants.ADD)
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-//                TODO("Not yet implemented")
+                callback(snapshot, Constants.REMOVE)
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
@@ -64,23 +73,23 @@ class Realtime {
     fun subscribeOnChanges(reference: DatabaseReference, valueEventListener: ValueEventListener) {
         unSubscribeOnChanges(reference, valueEventListener)
         reference.addValueEventListener(valueEventListener)
-        Log.d("Realtime", "Subscribed on realtime!")
+        Log.d("Realtime", "Subscribed to realtime value listener!")
     }
 
     fun unSubscribeOnChanges(reference: DatabaseReference, valueEventListener: ValueEventListener) {
         reference.removeEventListener(valueEventListener)
-        Log.d("Realtime", "Unsubscribed from realtime!")
+        Log.d("Realtime", "Unsubscribed from realtime value listener!")
     }
 
     fun subscribeOnChanges(reference: DatabaseReference, valueEventListener: ChildEventListener) {
         unSubscribeOnChanges(reference, valueEventListener)
         reference.addChildEventListener(valueEventListener)
-        Log.d("Realtime", "Subscribed on realtime!")
+        Log.d("Realtime", "Subscribed on realtime child listener!")
     }
 
     fun unSubscribeOnChanges(reference: DatabaseReference, valueEventListener: ChildEventListener) {
         reference.removeEventListener(valueEventListener)
-        Log.d("Realtime", "Unsubscribed from realtime!")
+        Log.d("Realtime", "Unsubscribed from realtime child listener!")
     }
 
 }

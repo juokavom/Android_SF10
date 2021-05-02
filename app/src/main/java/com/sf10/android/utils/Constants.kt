@@ -11,4 +11,7 @@ object Constants {
     const val PRIVATE_PLAYER_CARDS: String = "privatePlayerCards"
     const val PUBLIC_GAME_STATE: String = "publicGameState"
     const val MY_PROFILE_REQUEST = 0
+    const val UPDATE = 0
+    const val ADD = 1
+    const val REMOVE = 2
 }

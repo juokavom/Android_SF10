@@ -13,6 +13,7 @@ import com.google.android.material.navigation.NavigationView
 import com.sf10.android.R
 import com.sf10.android.databinding.ActivityMainBinding
 import com.sf10.android.databinding.ContentMainBinding
+import com.sf10.android.firebase.Realtime
 import com.sf10.android.models.User
 import com.sf10.android.utils.Constants
 import de.hdodenhof.circleimageview.CircleImageView
@@ -39,11 +40,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         contentWindowBinding.btnJoinGame.setOnClickListener {
             hideKeyboard(this)
             if (contentWindowBinding.etGameId.text.toString().isNotEmpty()) {
-                Toast.makeText(
-                    this@MainActivity,
-                    "Your provided game code = ${contentWindowBinding.etGameId.text}",
-                    Toast.LENGTH_LONG
-                ).show()
+                Realtime().joinSession(contentWindowBinding.etGameId.text.toString())
+
+
+//                Toast.makeText(
+//                    this@MainActivity,
+//                    "Your provided game code = ${contentWindowBinding.etGameId.text}",
+//                    Toast.LENGTH_LONG
+//                ).show()
             } else {
                 showErrorSnackBar("Game code cannot be empty!")
             }

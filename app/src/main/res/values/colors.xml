@@ -16,4 +16,6 @@
     <color name="secondary_text_color">#5ca08e</color>
 
     <color name="snackbar_error_color">#F72400</color>
+    <color name="circular_image_border_color">#757575</color>
+    <color name="public_player_description_text_color">#606060</color>
 </resources>

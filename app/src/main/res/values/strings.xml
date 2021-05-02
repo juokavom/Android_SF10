@@ -26,6 +26,7 @@
     <string name="join_game">JOIN GAME</string>
     <string name="create_game">CREATE GAME</string>
     <string name="game_code">GAME CODE</string>
+    <string name="image_content_description">Image</string>
 
 
 </resources>

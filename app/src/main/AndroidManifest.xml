@@ -22,10 +22,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.SessionActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".activities.ReportActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
