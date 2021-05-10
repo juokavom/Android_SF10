@@ -40,14 +40,16 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         contentWindowBinding.btnJoinGame.setOnClickListener {
             hideKeyboard(this)
             if (contentWindowBinding.etGameId.text.toString().isNotEmpty()) {
-                Realtime().joinSession(contentWindowBinding.etGameId.text.toString())
-
-
-//                Toast.makeText(
-//                    this@MainActivity,
-//                    "Your provided game code = ${contentWindowBinding.etGameId.text}",
-//                    Toast.LENGTH_LONG
-//                ).show()
+                Realtime().checkAndJoinSession(mUser!!, contentWindowBinding.etGameId.text.toString(), {
+                    val intent = Intent(this, RoomActivity::class.java)
+                    intent.putExtra(Constants.USER_CODE, mUser)
+                    intent.putExtra(Constants.IS_CREATOR, false)
+                    intent.putExtra(Constants.GAME_CODE, it)
+                    startActivity(intent)
+                    finish()
+                }, {
+                    showErrorSnackBar(it)
+                })
             } else {
                 showErrorSnackBar("Game code cannot be empty!")
             }

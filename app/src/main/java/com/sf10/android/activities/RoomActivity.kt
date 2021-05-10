@@ -33,23 +33,24 @@ class RoomActivity : BaseActivity() {
         setContentView(binding.root)
 
         mSession = Session()
+        realtimeDB = Realtime()
 
         mUser = intent.getParcelableExtra(Constants.USER_CODE)!!
         isCreator = intent.extras!!.getBoolean(Constants.IS_CREATOR)
         if (isCreator) createSession()
-
+        else {
+            realtimeDB.initSession(intent.extras!!.getString(Constants.GAME_CODE)!!)
+        }
         subscribe()
-
     }
 
     private fun createSession() {
-        realtimeDB = Realtime()
-
         val session = Session()
         session.publicGameState.id =
             UUID.randomUUID().toString().replace("-", "").substring(0, 6).toUpperCase()
         session.publicGameState.players =
             mutableListOf(PublicPlayer(username = mUser.username, image = mUser.image))
+        realtimeDB.initSession(session.publicGameState.id)
         realtimeDB.createSession(session)
     }
 
@@ -58,7 +59,6 @@ class RoomActivity : BaseActivity() {
         publicStateListener = realtimeDB.createChildListener { snapshot, code ->
             when (code) {
                 Constants.UPDATE, Constants.ADD -> {
-//                    Log.d("Realtime", "Add or update = ${snapshot.key}:${snapshot.value}")
                     when (snapshot.key.toString()) {
                         "id" -> {
                             mSession.publicGameState.id = snapshot.value.toString()

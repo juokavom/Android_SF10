@@ -4,6 +4,10 @@ import android.util.Log
 import com.firebase.ui.auth.data.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.database.ktx.getValue
+import com.sf10.android.models.GameState
+import com.sf10.android.models.GameStatus
+import com.sf10.android.models.PublicPlayer
 import com.sf10.android.models.Session
 import com.sf10.android.utils.Constants
 import com.sf10.android.utils.SecretConstants
@@ -17,19 +21,44 @@ class Realtime {
     lateinit var privateCardsReference: DatabaseReference
 
     fun createSession(session: Session) {
-        dbReference = mRealTime.getReference(session.publicGameState.id)
         dbReference.setValue(session)
-        gameStateReference = dbReference.child(Constants.PUBLIC_GAME_STATE)
-        privateCardsReference = dbReference.child(Constants.PRIVATE_PLAYER_CARDS).child(Utils().getCurrentUserId())
     }
 
-    fun joinSession(roomId: String){
-        mRealTime.getReference(roomId).child(roomId).get().addOnSuccessListener {
-            Log.d("Realtime", "Room exist")
-        }.addOnFailureListener {
-            Log.d("Realtime", "Room doesn't exist")
-        }
+    fun initSession(gameCode: String){
+        dbReference = mRealTime.getReference(gameCode)
+        gameStateReference = dbReference.child(Constants.PUBLIC_GAME_STATE)
+        privateCardsReference =
+            dbReference.child(Constants.PRIVATE_PLAYER_CARDS).child(Utils().getCurrentUserId())
+    }
 
+    fun checkAndJoinSession(
+        user: com.sf10.android.models.User,
+        roomId: String,
+        joinCallback: (String) -> Unit,
+        errorCallback: (String) -> Unit
+    ) {
+        val preparedCode: String = roomId.toUpperCase(Locale.ROOT)
+        mRealTime.getReference(preparedCode).child(Constants.PUBLIC_GAME_STATE).get()
+            .addOnSuccessListener {
+                if (it.value != null) {
+                    val pgs = it.getValue<GameState>()!!
+                    if (pgs.gameStatus !== GameStatus.ROOM) {
+                        errorCallback("Game has already been started!")
+                    } else if (pgs.players.size >= Constants.MAX_PLAYER_COUNT) {
+                        errorCallback("Maximum player amount reached!")
+                    } else {
+                        pgs.players.add(PublicPlayer(username = user.username, image = user.image))
+                        mRealTime.getReference(roomId.toUpperCase(Locale.ROOT))
+                            .child(Constants.PUBLIC_GAME_STATE).child("players")
+                            .setValue(pgs.players)
+                        joinCallback(preparedCode)
+                    }
+                } else {
+                    errorCallback("Room doesn't exist!")
+                }
+            }.addOnFailureListener {
+                errorCallback("Room doesn't exist!")
+            }
     }
 
     //Privaciom kortom
