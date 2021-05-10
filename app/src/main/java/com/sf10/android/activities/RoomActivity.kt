@@ -44,21 +44,24 @@ class RoomActivity : BaseActivity() {
         if (isCreator) {
             createSession()
             binding.btnJoinGame.visibility = View.VISIBLE
-        }
-        else {
+        } else {
             binding.btnJoinGame.visibility = View.GONE
             realtimeDB.initSession(intent.extras!!.getString(Constants.GAME_CODE)!!)
         }
 
         binding.btnLeaveGame.setOnClickListener {
             realtimeDB.kickPlayer(mUser.id) {
-                if(isCreator) goBackToMainMenu("You've left and destroyed the room!")
+                if (isCreator) {
+                    goBackToMainMenu("You've left and destroyed the room!")
+                    realtimeDB.destroySession()
+                }
                 else goBackToMainMenu("You've left the room!")
             }
         }
 
         subscribe()
     }
+
 
     private fun createSession() {
         val session = Session()
@@ -70,7 +73,7 @@ class RoomActivity : BaseActivity() {
         realtimeDB.createSession(session)
     }
 
-    private fun goBackToMainMenu(message: String){
+    private fun goBackToMainMenu(message: String) {
         Toast.makeText(
             this@RoomActivity, message,
             Toast.LENGTH_LONG
@@ -95,17 +98,17 @@ class RoomActivity : BaseActivity() {
                             val playersList = ArrayList<PublicPlayer>()
                             for (pl in snapshot.children) {
                                 val player = pl.getValue(PublicPlayer::class.java)!!
-                                if(player.uid == mUser.id) imStillPresent = true
+                                if (player.uid == mUser.id) imStillPresent = true
                                 playersList.add(player)
                             }
                             setupPlayersRecyclerView(playersList)
-                            if(!imStillPresent) goBackToMainMenu("You have been kicked!")
+                            if (!imStillPresent) goBackToMainMenu("You have been kicked!")
                         }
                     }
                 }
 
                 Constants.REMOVE -> {
-                    Log.d("Realtime", "REMOVED")
+                    goBackToMainMenu("Creator has ended session!")
                 }
             }
         }

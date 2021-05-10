@@ -31,6 +31,11 @@ class Realtime {
             dbReference.child(Constants.PRIVATE_PLAYER_CARDS).child(Utils().getCurrentUserId())
     }
 
+
+    fun destroySession() {
+        dbReference.removeValue()
+    }
+
     fun kickPlayer(uid: String, successCalback: () -> Unit) {
         dbReference.child(Constants.PUBLIC_GAME_STATE).get()
             .addOnSuccessListener {
