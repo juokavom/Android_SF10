@@ -3,11 +3,15 @@ package com.sf10.android.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Toast
+import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.ValueEventListener
+import com.sf10.android.R
 import com.sf10.android.adapters.RoomAdapter
 import com.sf10.android.databinding.ActivityRoomBinding
 import com.sf10.android.firebase.Realtime
@@ -37,10 +41,22 @@ class RoomActivity : BaseActivity() {
 
         mUser = intent.getParcelableExtra(Constants.USER_CODE)!!
         isCreator = intent.extras!!.getBoolean(Constants.IS_CREATOR)
-        if (isCreator) createSession()
+        if (isCreator) {
+            createSession()
+            binding.btnJoinGame.visibility = View.VISIBLE
+        }
         else {
+            binding.btnJoinGame.visibility = View.GONE
             realtimeDB.initSession(intent.extras!!.getString(Constants.GAME_CODE)!!)
         }
+
+        binding.btnLeaveGame.setOnClickListener {
+            realtimeDB.kickPlayer(mUser.id) {
+                if(isCreator) goBackToMainMenu("You've left and destroyed the room!")
+                else goBackToMainMenu("You've left the room!")
+            }
+        }
+
         subscribe()
     }
 
@@ -54,6 +70,16 @@ class RoomActivity : BaseActivity() {
         realtimeDB.createSession(session)
     }
 
+    private fun goBackToMainMenu(message: String){
+        Toast.makeText(
+            this@RoomActivity, message,
+            Toast.LENGTH_LONG
+        ).show()
+        startActivity(Intent(this, MainActivity::class.java))
+        unsubscribe()
+        finish()
+    }
+
 
     private fun subscribe() {
         publicStateListener = realtimeDB.createChildListener { snapshot, code ->
@@ -65,17 +91,21 @@ class RoomActivity : BaseActivity() {
                             binding.roomId.text = mSession.publicGameState.id
                         }
                         "players" -> {
+                            var imStillPresent = false
                             val playersList = ArrayList<PublicPlayer>()
                             for (pl in snapshot.children) {
-                                playersList.add(pl.getValue(PublicPlayer::class.java)!!)
+                                val player = pl.getValue(PublicPlayer::class.java)!!
+                                if(player.uid == mUser.id) imStillPresent = true
+                                playersList.add(player)
                             }
                             setupPlayersRecyclerView(playersList)
+                            if(!imStillPresent) goBackToMainMenu("You have been kicked!")
                         }
                     }
                 }
 
                 Constants.REMOVE -> {
-                    Log.d("Realtime", "Removed")
+                    Log.d("Realtime", "REMOVED")
                 }
             }
         }
@@ -101,7 +131,10 @@ class RoomActivity : BaseActivity() {
         placesAdapter.setOnClickListener(object : RoomAdapter.OnClickListener {
             override fun onClickKick(position: Int, model: PublicPlayer) {
                 Log.d("Realtime", "Player with id = ${model.uid} wil be kicked!")
+                realtimeDB.kickPlayer(model.uid) {}
             }
         })
     }
+
+    override fun onBackPressed() {}
 }

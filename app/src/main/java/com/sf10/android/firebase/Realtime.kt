@@ -24,11 +24,22 @@ class Realtime {
         dbReference.setValue(session)
     }
 
-    fun initSession(gameCode: String){
+    fun initSession(gameCode: String) {
         dbReference = mRealTime.getReference(gameCode)
         gameStateReference = dbReference.child(Constants.PUBLIC_GAME_STATE)
         privateCardsReference =
             dbReference.child(Constants.PRIVATE_PLAYER_CARDS).child(Utils().getCurrentUserId())
+    }
+
+    fun kickPlayer(uid: String, successCalback: () -> Unit) {
+        dbReference.child(Constants.PUBLIC_GAME_STATE).get()
+            .addOnSuccessListener {
+                if (it.value != null) {
+                    dbReference.child(Constants.PUBLIC_GAME_STATE).child("players")
+                        .setValue(it.getValue<GameState>()!!.players.filter { pp -> pp.uid != uid })
+                    successCalback()
+                }
+            }
     }
 
     fun checkAndJoinSession(

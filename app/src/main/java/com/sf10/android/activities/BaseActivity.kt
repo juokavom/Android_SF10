@@ -53,7 +53,7 @@ open class BaseActivity : AppCompatActivity() {
         return FirebaseAuth.getInstance().currentUser!!.uid
     }
 
-    fun doubleBackToExit() {
+    fun doubleBackToExit(message: String) {
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed()
             return
@@ -62,11 +62,15 @@ open class BaseActivity : AppCompatActivity() {
 
         Toast.makeText(
             this,
-            resources.getString(R.string.please_click_again_to_exit),
+            message,
             Toast.LENGTH_SHORT
         ).show()
 
         Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
+    }
+
+    fun doubleBackToExit() {
+        doubleBackToExit(resources.getString(R.string.please_click_again_to_exit))
     }
 
     fun showErrorSnackBar(message: String) {

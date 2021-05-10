@@ -24,9 +24,15 @@
     <string name="report_issue_title">Report issue</string>
 
     <string name="join_game">JOIN GAME</string>
+    <string name="start_game">START GAME</string>
+    <string name="leave_game">LEAVE GAME</string>
     <string name="create_game">CREATE GAME</string>
     <string name="game_code">GAME CODE</string>
     <string name="image_content_description">Image</string>
+
+
+    <string name="exit_room_player">Please click back again to exit room.</string>
+    <string name="exit_room_creator">Please click back again to exit room. This will destroy the room.</string>
 
 
 </resources>
