@@ -1,9 +1,11 @@
 package com.sf10.android.activities
 
+import android.icu.util.Measure
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -13,7 +15,7 @@ import com.sf10.android.R
 import com.sf10.android.databinding.ActivityGameBinding
 class GameActivity : BaseActivity() {
     private lateinit var binding: ActivityGameBinding
-    private val playersListViewList = mutableListOf<TextView>()
+    private val playersListViewList = mutableListOf<View>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,9 +24,6 @@ class GameActivity : BaseActivity() {
 
         createCircularViews()
 
-        this.binding.button2.setOnClickListener {
-            this.playersListViewList[2].text = "edited"
-        }
     }
 
     private fun createCircularViews(){
@@ -32,21 +31,21 @@ class GameActivity : BaseActivity() {
         val angleIncrement: Float = 360f/n
 
         for(i in 1..n){
-            val tv: TextView = TextView(this@GameActivity)
+            val tv: View = LayoutInflater.from(this).inflate(R.layout.item_public_player_game, null)
             tv.id = View.generateViewId()
-            tv.text = "Text Field $i"
+            tv.findViewById<TextView>(R.id.tvNameGame).text = "Name $i"
 
-            val circularView = createCircularView(tv, 50, 50, 120, angleIncrement, i)
+            val circularView = createCircularView(tv, 120, angleIncrement, i)
 
             playersListViewList.add(circularView)
             binding.gameLayout.addView(circularView)
         }
     }
 
-    private fun createCircularView(view: TextView, width: Int, height: Int, radius: Int, angleIncrement: Float, place: Int): TextView{
+    private fun createCircularView(view: View, radius: Int, angleIncrement: Float, place: Int): View{
         val layout = ConstraintLayout.LayoutParams(
-            width.toPx(),
-            height.toPx()
+            ConstraintLayout.LayoutParams.WRAP_CONTENT,
+            ConstraintLayout.LayoutParams.WRAP_CONTENT
         )
         layout.circleRadius = radius.toPx()
         layout.circleConstraint = R.id.gameRoomCenter

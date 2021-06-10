@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.sf10.android.R
-import com.sf10.android.databinding.ItemPublicPlayerBinding
+import com.sf10.android.databinding.ItemPublicPlayerRoomBinding
 import com.sf10.android.models.PublicPlayer
 import com.sf10.android.models.Visibility
 import de.hdodenhof.circleimageview.CircleImageView
@@ -28,7 +28,7 @@ open class RoomAdapter(
     private var onClickListener: OnClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val binding = ItemPublicPlayerBinding.inflate(
+        val binding = ItemPublicPlayerRoomBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
         return MyViewHolder(binding)
@@ -61,7 +61,7 @@ open class RoomAdapter(
         return list.size
     }
 
-    class MyViewHolder(private val binding: ItemPublicPlayerBinding) :
+    class MyViewHolder(private val binding: ItemPublicPlayerRoomBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(model: PublicPlayer) {
