@@ -43,9 +43,9 @@ class RoomActivity : BaseActivity() {
         isCreator = intent.extras!!.getBoolean(Constants.IS_CREATOR)
         if (isCreator) {
             createSession()
-            binding.btnJoinGame.visibility = View.VISIBLE
+            binding.btnStartGame.visibility = View.VISIBLE
         } else {
-            binding.btnJoinGame.visibility = View.GONE
+            binding.btnStartGame.visibility = View.GONE
             realtimeDB.initSession(intent.extras!!.getString(Constants.GAME_CODE)!!)
         }
 
@@ -57,6 +57,10 @@ class RoomActivity : BaseActivity() {
                 }
                 else goBackToMainMenu("You've left the room!")
             }
+        }
+
+        binding.btnStartGame.setOnClickListener {
+            startActivity(Intent(this, GameActivity::class.java))
         }
 
         subscribe()
