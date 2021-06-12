@@ -17,34 +17,42 @@ import java.util.*
 class Realtime {
     private val mRealTime = FirebaseDatabase.getInstance(SecretConstants.REALTIME_DATABASE_URL)
     private lateinit var dbReference: DatabaseReference
-    lateinit var gameStateReference: DatabaseReference
-    lateinit var privateCardsReference: DatabaseReference
+    private lateinit var gameStateReference: DatabaseReference
+    private lateinit var privateCardsReference: DatabaseReference
 
     fun createSession(session: Session) {
         dbReference.setValue(session)
     }
 
-    fun initSession(gameCode: String) {
+    fun getGameStateReference(): DatabaseReference {
+        return gameStateReference
+    }
+
+    fun initGameStateDatabaseReferences(gameCode: String) {
         dbReference = mRealTime.getReference(gameCode)
         gameStateReference = dbReference.child(Constants.PUBLIC_GAME_STATE)
         privateCardsReference =
             dbReference.child(Constants.PRIVATE_PLAYER_CARDS).child(Utils().getCurrentUserId())
     }
 
-
     fun destroySession() {
         dbReference.removeValue()
     }
 
     fun kickPlayer(uid: String, successCalback: () -> Unit) {
-        dbReference.child(Constants.PUBLIC_GAME_STATE).get()
+        gameStateReference.get()
             .addOnSuccessListener {
                 if (it.value != null) {
-                    dbReference.child(Constants.PUBLIC_GAME_STATE).child("players")
+                    gameStateReference.child("players")
                         .setValue(it.getValue<GameState>()!!.players.filter { pp -> pp.uid != uid })
                     successCalback()
                 }
             }
+    }
+
+    fun setGameStartData() {
+        gameStateReference.child("date").child("started").setValue(Utils().getCurrentDateTime())
+        gameStateReference.child("gameStatus").setValue(GameStatus.GAME)
     }
 
     fun checkAndJoinSession(

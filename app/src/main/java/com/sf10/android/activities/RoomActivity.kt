@@ -5,19 +5,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.core.view.GravityCompat
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.ValueEventListener
-import com.sf10.android.R
 import com.sf10.android.adapters.RoomAdapter
 import com.sf10.android.databinding.ActivityRoomBinding
 import com.sf10.android.firebase.Realtime
-import com.sf10.android.models.PublicPlayer
-import com.sf10.android.models.Session
-import com.sf10.android.models.User
+import com.sf10.android.models.*
 import com.sf10.android.utils.Constants
 import java.util.*
 import kotlin.collections.ArrayList
@@ -26,9 +19,8 @@ class RoomActivity : BaseActivity() {
     private lateinit var binding: ActivityRoomBinding
     private lateinit var realtimeDB: Realtime
     private lateinit var publicStateListener: ChildEventListener
-    private lateinit var privateMyCardsListener: ValueEventListener
     private lateinit var mUser: User
-    private lateinit var mSession: Session
+    private lateinit var gameCode: String
     private var isCreator: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +28,6 @@ class RoomActivity : BaseActivity() {
         binding = ActivityRoomBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mSession = Session()
         realtimeDB = Realtime()
 
         mUser = intent.getParcelableExtra(Constants.USER_CODE)!!
@@ -46,8 +37,10 @@ class RoomActivity : BaseActivity() {
             binding.btnStartGame.visibility = View.VISIBLE
         } else {
             binding.btnStartGame.visibility = View.GONE
-            realtimeDB.initSession(intent.extras!!.getString(Constants.GAME_CODE)!!)
+            gameCode = intent.extras!!.getString(Constants.GAME_CODE)!!
+            realtimeDB.initGameStateDatabaseReferences(gameCode)
         }
+
 
         binding.btnLeaveGame.setOnClickListener {
             realtimeDB.kickPlayer(mUser.id) {
@@ -60,7 +53,7 @@ class RoomActivity : BaseActivity() {
         }
 
         binding.btnStartGame.setOnClickListener {
-            startActivity(Intent(this, GameActivity::class.java))
+            realtimeDB.setGameStartData()
         }
 
         subscribe()
@@ -73,7 +66,8 @@ class RoomActivity : BaseActivity() {
             UUID.randomUUID().toString().replace("-", "").substring(0, 6).toUpperCase()
         session.publicGameState.players =
             mutableListOf(PublicPlayer(username = mUser.username, image = mUser.image))
-        realtimeDB.initSession(session.publicGameState.id)
+        gameCode = session.publicGameState.id
+        realtimeDB.initGameStateDatabaseReferences(gameCode)
         realtimeDB.createSession(session)
     }
 
@@ -94,8 +88,8 @@ class RoomActivity : BaseActivity() {
                 Constants.UPDATE, Constants.ADD -> {
                     when (snapshot.key.toString()) {
                         "id" -> {
-                            mSession.publicGameState.id = snapshot.value.toString()
-                            binding.roomId.text = mSession.publicGameState.id
+                            this.gameCode = snapshot.value.toString()
+                            binding.roomId.text = gameCode
                         }
                         "players" -> {
                             var imStillPresent = false
@@ -108,6 +102,17 @@ class RoomActivity : BaseActivity() {
                             setupPlayersRecyclerView(playersList)
                             if (!imStillPresent) goBackToMainMenu("You have been kicked!")
                         }
+                        "gameStatus" -> {
+                            if(snapshot.value == GameStatus.GAME.toString()){
+                                val intent = Intent(this, GameActivity::class.java)
+                                intent.putExtra(Constants.USER_CODE, mUser)
+                                intent.putExtra(Constants.IS_CREATOR, isCreator)
+                                intent.putExtra(Constants.GAME_CODE, gameCode)
+                                startActivity(intent)
+                                unsubscribe()
+                                finish()
+                            }
+                        }
                     }
                 }
 
@@ -116,17 +121,17 @@ class RoomActivity : BaseActivity() {
                 }
             }
         }
-        realtimeDB.subscribeOnChanges(realtimeDB.gameStateReference, publicStateListener)
+        realtimeDB.subscribeOnChanges(realtimeDB.getGameStateReference(), publicStateListener)
 
-        privateMyCardsListener = realtimeDB.createEventListener {
-
-        }
-        realtimeDB.subscribeOnChanges(realtimeDB.privateCardsReference, privateMyCardsListener)
+//        privateMyCardsListener = realtimeDB.createEventListener {
+//
+//        }
+//        realtimeDB.subscribeOnChanges(realtimeDB.privateCardsReference, privateMyCardsListener)
     }
 
     fun unsubscribe() {
-        realtimeDB.unSubscribeOnChanges(realtimeDB.gameStateReference, publicStateListener)
-        realtimeDB.subscribeOnChanges(realtimeDB.privateCardsReference, privateMyCardsListener)
+        realtimeDB.unSubscribeOnChanges(realtimeDB.getGameStateReference(), publicStateListener)
+//        realtimeDB.unSubscribeOnChanges(realtimeDB.privateCardsReference, privateMyCardsListener)
     }
 
     private fun setupPlayersRecyclerView(playerList: ArrayList<PublicPlayer>) {
