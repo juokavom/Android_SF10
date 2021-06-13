@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
@@ -104,4 +105,10 @@ open class BaseActivity : AppCompatActivity() {
             Log.d("User", "does not exist")
         })
     }
+
+    fun Int.toPx(): Int =
+        TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            this.toFloat(), resources.displayMetrics
+        ).toInt()
 }

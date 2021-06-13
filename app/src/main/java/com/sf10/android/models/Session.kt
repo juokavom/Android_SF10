@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 
 data class Session(
     var publicGameState: GameState = GameState(),
-    var privatePlayerCards: HashMap<String, Any> = hashMapOf(Utils().getCurrentUserId() to "")
+    var privatePlayerCards: HashMap<String, Any> = hashMapOf(Utils.getCurrentUserId() to "")
 ) {
     @Exclude
     fun toMap(): Map<String, Any?> {
@@ -33,7 +33,7 @@ enum class MoveStatus {
 
 @Parcelize
 data class Date(
-    var created: String = Utils().getCurrentDateTime(),
+    var created: String = Utils.getCurrentDateTime(),
     var started: String = "",
     var ended: String = ""
 ): Parcelable {
@@ -49,7 +49,7 @@ data class Date(
 
 @Parcelize
 data class PublicPlayer(
-    var uid: String = Utils().getCurrentUserId(),
+    var uid: String = Utils.getCurrentUserId(),
     var username: String = "",
     var image: String = "",
     var cardCount: Int = 0,
@@ -70,7 +70,7 @@ data class PublicPlayer(
 @Parcelize
 data class GameState(
     var id: String = "",
-    var creator_uid: String = Utils().getCurrentUserId(),
+    var creator_uid: String = Utils.getCurrentUserId(),
     var visibility: Visibility = Visibility.PRIVATE,
     var gameStatus: GameStatus = GameStatus.ROOM,
     var moveStatus: MoveStatus = MoveStatus.INIT,

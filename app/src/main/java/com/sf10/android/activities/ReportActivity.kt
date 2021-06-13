@@ -30,7 +30,7 @@ class ReportActivity : BaseActivity() {
                     this,
                     Report(
                         getCurrentUserID(),
-                        Utils().getCurrentDateTime(),
+                        Utils.getCurrentDateTime(),
                         issue
                     )
                 )

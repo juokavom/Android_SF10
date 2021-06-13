@@ -23,6 +23,7 @@ import com.sf10.android.models.PublicPlayer
 import com.sf10.android.models.Session
 import com.sf10.android.models.User
 import com.sf10.android.utils.Constants
+import com.sf10.android.utils.Utils
 import de.hdodenhof.circleimageview.CircleImageView
 
 class GameActivity : BaseActivity() {
@@ -65,39 +66,20 @@ class GameActivity : BaseActivity() {
         this.playerViewMap = mutableMapOf()
 
         for (i in 0 until n) {
-            val playerView: View = LayoutInflater.from(this).inflate(R.layout.item_public_player_game, null)
+            val playerView: View =
+                LayoutInflater.from(this).inflate(R.layout.item_public_player_game, null)
             playerView.id = View.generateViewId()
             val publicPlayer = publicGameState.players[i]
 
-            playerView.findViewById<TextView>(R.id.tvNameGame).text = publicGameState.players[i].username
+            playerView.findViewById<TextView>(R.id.tvNameGame).text =
+                publicGameState.players[i].username
             Glide.with(this).load(publicGameState.players[i].image).centerCrop()
                 .placeholder(R.drawable.ic_user_place_holder)
                 .into(playerView.findViewById<CircleImageView>(R.id.iv_place_image_game))
 
-            playerViewMap[publicPlayer.uid] = createCircularView(playerView, 120, angleIncrement, i)
+            playerViewMap[publicPlayer.uid] = Utils.createCircularView(playerView, i, 120.toPx(), angleIncrement, R.id.gameRoomCenter)
             binding.gameLayout.addView(playerViewMap[publicPlayer.uid])
         }
-    }
-
-    private fun createCircularView(
-        view: View,
-        radius: Int,
-        angleIncrement: Float,
-        place: Int
-    ): View {
-        val layout = ConstraintLayout.LayoutParams(
-            ConstraintLayout.LayoutParams.WRAP_CONTENT,
-            ConstraintLayout.LayoutParams.WRAP_CONTENT
-        )
-        layout.circleRadius = radius.toPx()
-        layout.circleConstraint = R.id.gameRoomCenter
-        layout.circleAngle = (place * angleIncrement)
-        layout.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
-        layout.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
-        layout.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
-        layout.startToStart = ConstraintLayout.LayoutParams.PARENT_ID
-        view.layoutParams = layout
-        return view
     }
 
 
@@ -135,12 +117,6 @@ class GameActivity : BaseActivity() {
 ////        }
 ////        realtimeDB.subscribeOnChanges(realtimeDB.privateCardsReference, privateMyCardsListener)
 //    }
-
-    private fun Int.toPx(): Int =
-        TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            this.toFloat(), resources.displayMetrics
-        ).toInt()
 
     override fun onBackPressed() {}
 

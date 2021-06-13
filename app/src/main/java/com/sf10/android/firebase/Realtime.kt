@@ -32,7 +32,7 @@ class Realtime {
         dbReference = mRealTime.getReference(gameCode)
         gameStateReference = dbReference.child(Constants.PUBLIC_GAME_STATE)
         privateCardsReference =
-            dbReference.child(Constants.PRIVATE_PLAYER_CARDS).child(Utils().getCurrentUserId())
+            dbReference.child(Constants.PRIVATE_PLAYER_CARDS).child(Utils.getCurrentUserId())
     }
 
     fun destroySession() {
@@ -51,7 +51,7 @@ class Realtime {
     }
 
     fun setGameStartData() {
-        gameStateReference.child("date").child("started").setValue(Utils().getCurrentDateTime())
+        gameStateReference.child("date").child("started").setValue(Utils.getCurrentDateTime())
         gameStateReference.child("gameStatus").setValue(GameStatus.GAME)
     }
 
