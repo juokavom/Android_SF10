@@ -1,5 +1,6 @@
 package com.sf10.android.utils
 
+import android.content.res.Resources.getSystem
 import android.util.TypedValue
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -32,10 +33,10 @@ class Utils {
             centerViewId: Int
         ): View {
             val layout = ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.WRAP_CONTENT,
+                120.px,
                 ConstraintLayout.LayoutParams.WRAP_CONTENT
             )
-            layout.circleRadius = radius
+            layout.circleRadius = radius.px
             layout.circleConstraint = centerViewId
             layout.circleAngle = (position * angleOfIncrement)
             layout.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
@@ -45,5 +46,8 @@ class Utils {
             view.layoutParams = layout
             return view
         }
+
+        val Int.dp: Int get() = (this / getSystem().displayMetrics.density).toInt()
+        val Int.px: Int get() = (this * getSystem().displayMetrics.density).toInt()
     }
 }

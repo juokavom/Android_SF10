@@ -105,10 +105,4 @@ open class BaseActivity : AppCompatActivity() {
             Log.d("User", "does not exist")
         })
     }
-
-    fun Int.toPx(): Int =
-        TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            this.toFloat(), resources.displayMetrics
-        ).toInt()
 }

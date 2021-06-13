@@ -1,16 +1,13 @@
 package com.sf10.android.activities
 
-import android.icu.util.Measure
-import androidx.appcompat.app.AppCompatActivity
+import android.R.attr.*
 import android.os.Bundle
-import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import com.bumptech.glide.Glide
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.ktx.getValue
@@ -19,12 +16,13 @@ import com.sf10.android.databinding.ActivityGameBinding
 import com.sf10.android.databinding.ItemPublicPlayerGameBinding
 import com.sf10.android.firebase.Realtime
 import com.sf10.android.models.GameState
-import com.sf10.android.models.PublicPlayer
-import com.sf10.android.models.Session
 import com.sf10.android.models.User
 import com.sf10.android.utils.Constants
 import com.sf10.android.utils.Utils
+import com.sf10.android.utils.Utils.Companion.dp
+import com.sf10.android.utils.Utils.Companion.px
 import de.hdodenhof.circleimageview.CircleImageView
+
 
 class GameActivity : BaseActivity() {
     private lateinit var binding: ActivityGameBinding
@@ -53,10 +51,6 @@ class GameActivity : BaseActivity() {
             createCircularPlayerListView()
         }
 
-        binding.button2.setOnClickListener {
-            val plaerView: View = playerViewMap["x0wO3abGrONYRUA3VCCWua1A1gB2"]!!
-            plaerView.findViewById<TextView>(R.id.tvNameGame).text = "edited :)))"
-        }
 //        subscribe()
     }
 
@@ -66,18 +60,34 @@ class GameActivity : BaseActivity() {
         this.playerViewMap = mutableMapOf()
 
         for (i in 0 until n) {
-            val playerView: View =
-                LayoutInflater.from(this).inflate(R.layout.item_public_player_game, null)
-            playerView.id = View.generateViewId()
+//            val playerView: View =
+//                LayoutInflater.from(this).inflate(R.layout.item_public_player_game, null)
+            val playerView = ItemPublicPlayerGameBinding.inflate(layoutInflater)
+            playerView.root.id = View.generateViewId()
             val publicPlayer = publicGameState.players[i]
 
-            playerView.findViewById<TextView>(R.id.tvNameGame).text =
+            playerView.tvNameGame.text =
                 publicGameState.players[i].username
             Glide.with(this).load(publicGameState.players[i].image).centerCrop()
                 .placeholder(R.drawable.ic_user_place_holder)
-                .into(playerView.findViewById<CircleImageView>(R.id.iv_place_image_game))
+                .into(playerView.ivPlaceImageGame)
 
-            playerViewMap[publicPlayer.uid] = Utils.createCircularView(playerView, i, 120.toPx(), angleIncrement, R.id.gameRoomCenter)
+            for(card_index in 0 until publicPlayer.cardCount){
+                val lp = LinearLayout.LayoutParams(30.px, 40.px)
+                lp.setMargins((card_index * 10 + 60).px, 30.px, 0.px, 0.px)
+                val cardImageView = ImageView(this)
+                cardImageView.setImageResource(R.drawable.ic_card_back)
+                cardImageView.layoutParams = lp
+                playerView.flPublicPlayerGame.addView(cardImageView)
+            }
+
+            playerViewMap[publicPlayer.uid] = Utils.createCircularView(
+                playerView.root,
+                i,
+                120,
+                angleIncrement,
+                R.id.gameRoomCenter
+            )
             binding.gameLayout.addView(playerViewMap[publicPlayer.uid])
         }
     }

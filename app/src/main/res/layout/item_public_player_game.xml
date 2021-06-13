@@ -1,34 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:padding="5dp">
+    android:id="@+id/fl_public_player_game"
+    android:layout_width="120dp"
+    android:layout_height="wrap_content">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/iv_place_image_game"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:contentDescription="@string/image_content_description"
-        android:src="@mipmap/ic_launcher"
-        app:civ_border_color="@color/circular_image_border_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tvNameGame"
-        android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/primary_text_color"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_place_image_game"
-        tools:text="Name" />
+        android:padding="5dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_place_image_game"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:contentDescription="@string/image_content_description"
+            android:src="@mipmap/ic_launcher"
+            app:civ_border_color="@color/circular_image_border_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvNameGame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_text_color"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_place_image_game"
+            tools:text="assdasssssssssssssssssssssssssssssssssssssssssssssssdd"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--    <ImageView-->
+<!--        android:layout_width="30dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_marginTop="30dp"-->
+<!--        android:layout_marginLeft="60dp"-->
+<!--        android:src="@drawable/ic_card_back" />-->
+
+<!--    <ImageView-->
+<!--        android:layout_width="30dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_marginTop="30dp"-->
+<!--        android:layout_marginLeft="70dp"-->
+<!--        android:src="@drawable/ic_card_back" />-->
+<!--    <ImageView-->
+<!--        android:layout_width="30dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_marginTop="30dp"-->
+<!--        android:layout_marginLeft="80dp"-->
+<!--        android:src="@drawable/ic_card_back" />-->
+<!--    <ImageView-->
+<!--        android:layout_width="30dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_marginTop="30dp"-->
+<!--        android:layout_marginLeft="90dp"-->
+<!--        android:src="@drawable/ic_card_back" />-->
+
+
+</FrameLayout>
