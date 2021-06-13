@@ -16,6 +16,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.ktx.getValue
 import com.sf10.android.R
 import com.sf10.android.databinding.ActivityGameBinding
+import com.sf10.android.databinding.ItemPublicPlayerGameBinding
 import com.sf10.android.firebase.Realtime
 import com.sf10.android.models.GameState
 import com.sf10.android.models.PublicPlayer
@@ -31,6 +32,7 @@ class GameActivity : BaseActivity() {
     private lateinit var mUser: User
     private lateinit var gameCode: String
     private lateinit var publicGameState: GameState
+    private lateinit var playerViewMap: MutableMap<String, View>
     private var isCreator: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,25 +51,31 @@ class GameActivity : BaseActivity() {
             this.publicGameState = it.getValue<GameState>()!!
             createCircularPlayerListView()
         }
+
+        binding.button2.setOnClickListener {
+            val plaerView: View = playerViewMap["x0wO3abGrONYRUA3VCCWua1A1gB2"]!!
+            plaerView.findViewById<TextView>(R.id.tvNameGame).text = "edited :)))"
+        }
 //        subscribe()
     }
 
     private fun createCircularPlayerListView() {
         val n = publicGameState.players.count()
         val angleIncrement: Float = 360f / n
+        this.playerViewMap = mutableMapOf()
 
         for (i in 0 until n) {
             val playerView: View = LayoutInflater.from(this).inflate(R.layout.item_public_player_game, null)
             playerView.id = View.generateViewId()
+            val publicPlayer = publicGameState.players[i]
 
             playerView.findViewById<TextView>(R.id.tvNameGame).text = publicGameState.players[i].username
             Glide.with(this).load(publicGameState.players[i].image).centerCrop()
                 .placeholder(R.drawable.ic_user_place_holder)
                 .into(playerView.findViewById<CircleImageView>(R.id.iv_place_image_game))
 
-            val circularView = createCircularView(playerView, 120, angleIncrement, i)
-
-            binding.gameLayout.addView(circularView)
+            playerViewMap[publicPlayer.uid] = createCircularView(playerView, 120, angleIncrement, i)
+            binding.gameLayout.addView(playerViewMap[publicPlayer.uid])
         }
     }
 
